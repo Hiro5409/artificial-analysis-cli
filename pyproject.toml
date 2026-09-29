@@ -1,0 +1,80 @@
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13"]
+build-backend = "uv_build"
+
+[project]
+name = "artificial-analysis-cli"
+version = "0.1.0"
+description = "Typed command-line access to Artificial Analysis model data."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+  "cyclopts>=5.0.0,<6",
+  "httpx2>=2.13.1,<3",
+  "pydantic>=2.13.5,<3",
+]
+
+[project.scripts]
+artificial-analysis = "artificial_analysis_cli.cli:main"
+
+[project.urls]
+Repository = "https://github.com/Hiro5409/artificial-analysis-cli"
+Issues = "https://github.com/Hiro5409/artificial-analysis-cli/issues"
+
+[dependency-groups]
+dev = [
+  "datamodel-code-generator==0.83.0",
+  "deptry>=0.25.1",
+  "lefthook>=2.1.14",
+  "pytest>=9.1.1",
+  "ruamel-yaml>=0.18.15",
+  "ruff>=0.16.9",
+  "rust-just>=1.58.0",
+  "ty>=0.0.84",
+]
+
+[tool.uv.build-backend]
+source-include = [
+  "justfile",
+  "openapi/**",
+  "scripts/**",
+  "tests/**",
+  "uv.lock",
+]
+
+[tool.pytest]
+minversion = "9.0"
+addopts = ["-ra", "--import-mode=importlib"]
+testpaths = ["tests"]
+strict = true
+
+[tool.ruff]
+line-length = 120
+extend-exclude = ["src/artificial_analysis_cli/_generated"]
+
+[tool.ruff.lint]
+select = ["ANN", "B", "DTZ", "E", "F", "I", "PT", "RUF", "SIM", "UP"]
+
+[tool.ty.src]
+exclude = ["src/artificial_analysis_cli/_generated"]
+
+[tool.datamodel-codegen]
+input-file-type = "openapi"
+output-model-type = "pydantic_v2.BaseModel"
+target-python-version = "3.11"
+disable-timestamp = true
+enum-field-as-literal = "all"
+use-standard-collections = true
+use-union-operator = true
+strict-nullable = true
+use-missing-sentinel = true
+collapse-root-models = true
+use-annotated = true
+field-constraints = true
+use-schema-description = true
+extra-fields = "allow"
+allow-remote-refs = false
+strict-refs = true
+formatters = ["builtin"]

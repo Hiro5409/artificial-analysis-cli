@@ -1,0 +1,10 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "curl-auth-header"
+
+  [[rules.allowlists]]
+  description = "Artificial Analysis documentation placeholder"
+  regexTarget = "secret"
+  regexes = ["YOUR_API_KEY"]

@@ -1,0 +1,35 @@
+name: API smoke
+
+# Spends API quota: one request per family and endpoint variant, plus extra language model pages.
+on:
+  workflow_dispatch:
+    inputs:
+      pro:
+        description: Also check the Pro endpoint variants; a key without Pro access reports them as forbidden.
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# One run at a time, so overlapping dispatches do not spend the quota twice.
+concurrency:
+  group: api-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    name: Live API list endpoints
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - name: Check the live API
+        env:
+          ARTIFICIAL_ANALYSIS_API_KEY: ${{ secrets.ARTIFICIAL_ANALYSIS_API_KEY }}
+          INCLUDE_PRO: ${{ inputs.pro }}
+        run: |
+          if [ "$INCLUDE_PRO" = "true" ]; then set -- --pro; fi
+          uv run --locked scripts/smoke.py "$@"
