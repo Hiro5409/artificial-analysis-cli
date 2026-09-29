@@ -74,6 +74,7 @@ jobs:
           path: dist/
       - name: Create release
         env:
+          GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
         run: |
           prerelease=()
